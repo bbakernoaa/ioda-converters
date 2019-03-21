@@ -8,7 +8,7 @@ import netCDF4
 from netCDF4 import Dataset
 import struct
 import datetime as dt
-
+#import ipdb
 import bufr2ncCommon as cm
 
 ############################################################################
@@ -143,6 +143,7 @@ def WriteNcVar(Fid, ObsNum, Vname, Vdata):
     # into the first element of the nlevs dimension. Note that there is
     # an assumption that nlevs is the first dimension of Value and
     # the second dimension of NcVar.
+    print(Fid[Vname])
     NcVar = Fid[Vname]
     ValNdim = Value.ndim
     NcNdim = NcVar.ndim
@@ -395,13 +396,19 @@ class ObsType(object):
         # Make a separate copy of the input dictionary
         OutVals = { key : value for key, value in ActualValues.items() }
 
+        #print("########### Hello 0", ActualValues.items() )
+        #sys.exit()
         for SubSpecs, SubBvals in zip(SpecList, BufrValues):
             for VarSpec, Bval in zip(SubSpecs, SubBvals):
+                #print('VarSpec = ', VarSpec)
                 # Convert according to the spec, and add to the dictionary.
                 # Netcdf variable name is in VarSpec[0]
                 # Data type is in VarSpec[2]
-                OutVals[VarSpec[0]] = BufrFloatToActual(Bval, VarSpec[2])
-
+                #print("########### Hello 1", OutVals)
+                OutVals[VarSpec[1]] = BufrFloatToActual(Bval, VarSpec[2])
+                #print("########### Hello 2",OutVals)
+        
+        #sys.exit()
         return OutVals
 
     ###############################################################################
@@ -416,17 +423,27 @@ class ObsType(object):
     # This single dictionary will be filled in by simply walking through the
     # variables in the lists contained in int_spec, evn_spec, rep_spec and seq_spec,
     # reading the mnemonics out of the BUFR file, and loading in the results into
+    # the single dictionary., evn_spec, rep_spec and seq_spec,
+    # reading the mnemonics out of the BUFR file, and loading in the results into
     # the single dictionary.
     def extract_bufr(self, bufr):
         # Initialize ActualValues to a list with one entry which is an empty dictionary.
         ActualValues = []
         ActualValues.append({})
+        #print("In extract_bufr ")
     
         # Read and convert the individual data mnemonics. The mnemonic value is the second
         # entry in the int_spec sublist elements.
         Mlists = [ [ Mlist[1] for Mlist in SubList] for SubList in self.int_spec ]
-        BufrValues = self.read_bufr_data(bufr, Mlists) 
+        #print("In extract_bufr 1", Mlists)
+        BufrValues = self.read_bufr_data(bufr, Mlists)
+        #ipdb.set_trace()
+        #print("In extract_bufr 2", BufrValues)
+        #print("In extract_bufr 2",ActualValues[0])
+        #print("In extract_bufr 2 self.int_spec",self.int_spec)
+
         ActualValues[0] = self.bufr_float_to_actual(self.int_spec, BufrValues, ActualValues[0])
+        #print("In extract_bufr 2",ActualValues[0])
 
         # Read and convert the event mnemonics
         Mlists = [ [ Mlist[1] for Mlist in SubList] for SubList in self.evn_spec ]
@@ -465,6 +482,9 @@ class ObsType(object):
     #                   (taking drift into account)
     #
     def calc_obs_date_time(self, ActualValues):
+
+        print("%%%%%%% calc_obs_date_time", self.bufr_ftype)
+        #sys.exit()
         if (self.bufr_ftype == cm.BFILE_PREPBUFR):
             # prepBUFR: use msg_date and DHR or HRDR
 
@@ -512,6 +532,9 @@ class ObsType(object):
 
         else:
             # raw BUFR: use YEAR, MNTH, ...
+            # print("############# 1",ActualValues['year'].data )
+            #print(ActualValues['YEAR'].data)
+            #sys.exit()
             Year   = int(ActualValues['YEAR'].data)
             Month  = int(ActualValues['MNTH'].data)
             Day    = int(ActualValues['DAYS'].data)
@@ -634,18 +657,39 @@ class ObsType(object):
         print("Converting BUFR to netcdf:")
         ObsNum = 0
         self.start_msg_selector()
+
+        print("@@@@@@@@@@ 1")
         while (self.select_next_msg(bufr)):
             MsgType = np.ma.array(bufr.msg_type)
             MsgDate = np.ma.array([bufr.msg_date])
+            #print("@@@@@@@@@@ 2 ", MsgType)
+
             while (bufr.load_subset() == 0):
+                #print("@@@@@@@@@@ 2.1 ", bufr.load_subset() )
                 # Grab all of the mnemonics from the bufr file, and convert
                 # from the BUFR float representation to the actual data type
                 # (integer, float, string, double). ActualValues is a list of
                 # dictionaries where each dictionary represents one observation.
                 # A dictionary within the list is keyed by the netcdf variable
                 # name and contains the associated data value.
+                #sys.exit()
+                #dir(bufr)
+                #sys.exit()
+                print("@@@@@@@@@@ 2.2 ")
                 ActualValues = self.extract_bufr(bufr)
-    
+                #print("@@@@@@@@@@ 3 ", ActualValues)
+                #sys.exit()
+                
+                print(ActualValues[0])
+                
+                
+                
+                
+                #sys.exit()
+                
+                
+                
+                
                 for i in range(len(ActualValues)):
                     # Put the message type and message date into the dictionary.
                     ActualValues[i]['msg_type'] = MsgType
@@ -661,7 +705,15 @@ class ObsType(object):
                     # Write out the netcdf variables.
                     for Vname, Vdata in ActualValues[i].items():
                         # Skip the write if Vdata is empty
+                        print('ActualValues[i].items() = ', ActualValues[i].items())
+                        #sys.exit()
+                        print(Vdata.size)
                         if Vdata.size:
+                            print('nc =', nc)
+                            print('ObsNum =', ObsNum)
+                            print('Vname =', Vname)
+                            print('Vdata =', Vdata)
+                            #sys.exit()
                             WriteNcVar(nc, ObsNum, Vname, Vdata)
    
                     # Increment observation number and print out progress messages.
