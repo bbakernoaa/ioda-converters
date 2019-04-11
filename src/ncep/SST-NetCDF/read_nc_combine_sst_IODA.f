@@ -1080,7 +1080,8 @@ c
 
 ! End Definition
       call check ( nf90_enddef(ncid) )
-      
+
+      call check ( nf90_put_var(ncid, lat_varID, lat_data))      
       call check ( nf90_put_var(ncid, lat_varID, lat_data))
       call check ( nf90_put_var(ncid, time_varID, time_data))
       call check ( nf90_put_var(ncid, obsValue_varID, obsValue_data))

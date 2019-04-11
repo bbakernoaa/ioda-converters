@@ -107,8 +107,8 @@ for OBS in ABI AHI 19_G MTA VIIRS; do
     export fname_template1=${NAM1}-L2P_GHRSST-SSTsubskin-${DATA}-ACSPO_${V}.nc
     echo $fname_template
     
-    ADATE=`/nwprod/util/exec/ndate -$time_window $anldate`
-    EDATE=`/nwprod/util/exec/ndate +11 $anldate`
+    ADATE=`/scratch3/NCEPDEV/nwprod/util/exec/ndate -$time_window $anldate`
+    EDATE=`/scratch3/NCEPDEV/nwprod/util/exec/ndate +11 $anldate`
 
     ADATEHH=$ADATE
     while [[ $ADATEHH -le $EDATE ]] ; do
@@ -119,7 +119,7 @@ for OBS in ABI AHI 19_G MTA VIIRS; do
          for file in $DATADIR/$DIRDATE/sst/$fname_template ; do
              echo $file >> filenclist
          done # file 
-         ADATEHH=`/nwprod/util/exec/ndate $HINT $ADATEHH`   # increment per hour
+         ADATEHH=`/scratch3/NCEPDEV/nwprod/util/exec/ndate $HINT $ADATEHH`   # increment per hour
          echo $ADATEHH
 
          nfiles=`wc -l filenclist | awk '{print $1}'`
