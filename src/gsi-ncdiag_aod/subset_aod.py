@@ -50,9 +50,8 @@ date='2018041500'
 rads = ['v.viirs-m_npp', \
         'sndrd4_g15']
 #add modis, goes-r, himawari etc.
-rads = ['aod']
+rads = ['aod_viirs']
 date='2018041500'
-date='2016100400'
 
 for name in rads:
   d = Dataset(name+'_obs_'+date+'_f.nc4', 'r')
