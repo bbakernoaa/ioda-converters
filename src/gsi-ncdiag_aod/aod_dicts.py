@@ -28,6 +28,7 @@ geovals_dict = {'air_temperature': 'air_temperature', \
                 'air_pressure': 'air_pressure',               \
                 'air_pressure_levels': 'air_pressure_levels', \
                 'humidity_mixing_ratio': 'humidity_mixing_ratio', \
+                'specific_humidity': 'specific_humidity', \
                 'relative_humidity': 'relative_humidity', \
                 'sulf': 'sulf', 'bc1': 'bc1', 'bc2': 'bc2',   \
                 'oc1': 'oc1', 'oc2': 'oc2', 'dust1': 'dust1', \
