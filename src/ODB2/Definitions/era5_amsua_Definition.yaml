@@ -1,7 +1,7 @@
 ---
 #
-# yaml IODA import configuration file for Met Office
-# atovs reports, importing the amsu-a data therein.
+# yaml IODA import configuration file for ECMWF era5
+# reports, importing the amsu-a data therein.
 #
 # This yaml file is designed as input for the ioda-converters
 # python script odbapi2nc.py.
@@ -9,7 +9,7 @@
 # Use for ECMWF era5 report types:
 # 1004, 1005, 1007, 1009
 #
-# Do not use for Met Office reports.
+# Do not use for Met Office reports, or era5 all-sky reports.
 #
 
 ###########################################################
@@ -39,9 +39,7 @@ column_variables:
     latitude: lat
     satellite_id: satellite_identifier
     sat_zenith_angle: zenith
-    sat_azimuth_angle: azimuth
     sol_zenith_angle: solar_zenith
-    sol_azimuth_angle: solar_azimuth
     scan_position: scanpos
     height: surface_height
 
@@ -54,7 +52,7 @@ column_variables:
 #
 # Format: <key: value> = <variable name: vertco_type value>
 vertco_variables:
-    sensor_channel: 7
+    sensor_channel: 3
 
 # varno_variables are read from the obsvalue, obs_error, and
 # QC columns when the varno column has the specified value.
@@ -65,7 +63,7 @@ vertco_variables:
 #
 # Format: <key: value> = <varno value: variable name>
 varno_variables:
-    249: USE_VERTCO
+    119: USE_VERTCO
 
 # varno_vertco_variables are read from the obsvalue, obs_error, and
 # QC columns when the varno column has a value with "USE_VERTCO"
@@ -74,7 +72,7 @@ varno_variables:
 #
 # Format: <key: <key: value>> = <varno value, <vertco_reference_1 value: variable name>>
 varno_vertco_variables:
-    249:
+    119:
       1: brightness_temperature_1
       2: brightness_temperature_2
       3: brightness_temperature_3
