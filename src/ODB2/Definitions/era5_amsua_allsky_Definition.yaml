@@ -6,10 +6,10 @@
 # This yaml file is designed as input for the ioda-converters
 # python script odbapi2nc.py.
 #
-# Use for ECMWF era5 report types:
-# 1004, 1005, 1007, 1009
+# Use for ECMWF era5 all-sky report types:
+# e.g. 21004, 21005, 21007, 21009, etc.
 #
-# Do not use for Met Office reports, or era5 all-sky reports.
+# Do not use for Met Office reports, or era5 non-all-sky reports.
 #
 
 ###########################################################
@@ -68,18 +68,8 @@ varno_variables:
 # Format: <key: <key: value>> = <varno value, <vertco_reference_1 value: variable name>>
 varno_vertco_variables:
     119:
-      3: brightness_temperature_3
       4: brightness_temperature_4
       5: brightness_temperature_5
-      6: brightness_temperature_6
-      7: brightness_temperature_7
-      8: brightness_temperature_8
-      9: brightness_temperature_9
-      10: brightness_temperature_10
-      11: brightness_temperature_11
-      12: brightness_temperature_12
-      13: brightness_temperature_13
-      14: brightness_temperature_14
 
 ###########################################################
 ##
@@ -96,18 +86,8 @@ varno_vertco_variables:
 #
 # Format: list of variable names
 ioda_variables:
-    - brightness_temperature_3
     - brightness_temperature_4
     - brightness_temperature_5
-    - brightness_temperature_6
-    - brightness_temperature_7
-    - brightness_temperature_8
-    - brightness_temperature_9
-    - brightness_temperature_10
-    - brightness_temperature_11
-    - brightness_temperature_12
-    - brightness_temperature_13
-    - brightness_temperature_14
 
 # Every unique combination of record_key field values defines
 # a new IODA record.

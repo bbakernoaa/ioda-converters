@@ -83,6 +83,7 @@ Definition YAML files currently created and tested:
 * Met Office AMSU-A from atovs report
 * ECMWF Radiosonde
 * ECMWF Aircraft
+* ECMWF AMSU-A
 
 ## odbapi2json
 
