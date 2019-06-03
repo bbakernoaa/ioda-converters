@@ -22,7 +22,8 @@ import ioda_conv_ncio as iconv
 
 output_var_names = [
     "sea_surface_temperature",
-    "sea_surface_skin_temperature"]
+    "sea_surface_skin_temperature",
+    "sea_ice_area_fraction"]
 
 
 def read_input(input_args):
@@ -86,7 +87,8 @@ def read_input(input_args):
         'sst_dtime',
         'sses_bias',
         'sses_standard_deviation',
-        'sea_surface_temperature')
+        'sea_surface_temperature',
+        'sea_ice_fraction')
     for v in input_vars:
         if v not in data_in:
             data_in[v] = ncd.variables[v][:].ravel()[mask]
@@ -124,6 +126,7 @@ def read_input(input_args):
     # TODO change everything in soca to handle K instead of C ?
     val_sst_skin = data_in['sea_surface_temperature'] - 273.15
     val_sst = val_sst_skin - data_in['sses_bias']
+    val_aice = data_in['sea_ice_fraction']
     err = data_in['sses_standard_deviation']
     qc = 5 - data_in['quality_level']
 
@@ -141,6 +144,11 @@ def read_input(input_args):
         obs_data[(output_var_names[1], global_config['oerr_name'])] = np.zeros(obs_dim),
         obs_data[(output_var_names[1], global_config['opqc_name'])] = np.zeros(obs_dim),
         num_vars += 1
+    if global_config['output_aice']:
+        obs_data[(output_var_names[2], global_config['oval_name'])] = np.zeros(obs_dim),
+        obs_data[(output_var_names[2], global_config['oerr_name'])] = np.zeros(obs_dim),
+        obs_data[(output_var_names[2], global_config['opqc_name'])] = np.zeros(obs_dim),
+        num_vars += 1
 
     # create the final output structures
     loc_data = {
@@ -156,7 +164,10 @@ def read_input(input_args):
         obs_data[(output_var_names[1], global_config['oval_name'])] = val_sst_skin
         obs_data[(output_var_names[1], global_config['oerr_name'])] = err
         obs_data[(output_var_names[1], global_config['opqc_name'])] = qc
-
+    if global_config['output_aice']:
+        obs_data[(output_var_names[2], global_config['oval_name'])] = val_aice
+        obs_data[(output_var_names[2], global_config['oerr_name'])] = 0.05*np.ones(np.shape(val_aice))
+        obs_data[(output_var_names[2], global_config['opqc_name'])] = qc
     return (obs_data, loc_data, attr_data)
 
 
@@ -207,12 +218,18 @@ def main():
         help='if set, only the skin or subskin sst is output.'
              ' Otherwise, bulk sst, and skin sst are both output.',
         action='store_true')
+    optional.add_argument(
+        '--aice',
+        help='if set, only the sea-ice fraction is output.'
+             ' Otherwise, sea-ice fraction is part of the output.',
+        action='store_true')
 
     args = parser.parse_args()
     args.date = datetime.strptime(args.date, '%Y%m%d%H')
-    if not args.sst and not args.skin_sst:
+    if not args.sst and not args.skin_sst and not args.aice:
         args.sst = True
         args.skin_sst = True
+        args.aice = True
 
     # setup the IODA writer
     writer = iconv.NcWriter(args.output, [], [])
@@ -229,6 +246,7 @@ def main():
     global_config['opqc_name'] = writer.OqcName()
     global_config['output_sst'] = args.sst
     global_config['output_skin_sst'] = args.skin_sst
+    global_config['output_aice'] = True#args.aice    
     pool_inputs = [(i, global_config) for i in args.input]
 
     # read / process files in parallel
@@ -262,6 +280,8 @@ def main():
         selected_names.append(output_var_names[0])
     if args.skin_sst:
         selected_names.append(output_var_names[1])
+    if args.aice:
+        selected_names.append(output_var_names[2])        
     var_data = {writer._var_list_name: writer.FillNcVector(
         selected_names, "string")}
 
