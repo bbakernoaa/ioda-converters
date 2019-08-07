@@ -118,7 +118,6 @@ contains
           !end do
         end do
       end if
-      print *, imsg
     end do
   end subroutine proc_msgtype
 
@@ -129,8 +128,8 @@ contains
     ! of mnemonics
     implicit none
     character(10) :: code, vname, vname2
-    character(10), allocatable, dimension(:) :: vnames
-    integer :: i, nlines, io, nvars
+    character(10), allocatable, dimension(:) :: repvnames,vnames
+    integer :: i, nlines, io, nvars, nrepvars
     integer, parameter :: ifile=50
     nlines = 0
     do
@@ -144,7 +143,7 @@ contains
     read(ifile, *)
     read(ifile, *)
     read(ifile, *)
-    do i=1,nlines-6 ! assumes first 3 should be thrown out
+    do i=1,nlines-6 ! assumes first and last 3 should be thrown out
       read(ifile, *) code, vname, vname2
       if (code(1:4) /= "++++" .and. vname2(1:5) /= "REPLI" .and..not. any(validvars==vname)) then
         nvars = nvars+1
