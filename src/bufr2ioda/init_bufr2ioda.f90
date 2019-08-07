@@ -12,8 +12,8 @@ module init_bufr2ioda
   ! public subroutines
   public :: init
   ! public variables
-  public :: bufrfile, outdir
-  character(len=255) :: bufrfile, outdir
+  public :: bufrfile, outdir, varnamefile
+  character(len=255) :: bufrfile, outdir, varnamefile
 contains
   subroutine init
     implicit none
@@ -22,10 +22,14 @@ contains
     logical :: exist_in
     ! get command line arguments
     nargs = command_argument_count()
-    if (nargs /= 2) then
-      write(*,*) "usage: bufr2ioda /path/to/bufrfile /path/to/output/"
+    if (nargs < 2) then
+      write(*,*) "usage: bufr2ioda /path/to/bufrfile /path/to/output/ [/path/to/varnames.txt]"
       write(*,*) "Not enough arguments... Fatal Error!"
       stop
+    else if (nargs == 3) then
+      call get_command_argument(3, varnamefile)
+    else
+      varnamefile = './IODAnames.txt'
     end if
     call get_command_argument(1, bufrfile)
     call get_command_argument(2, outdir)
