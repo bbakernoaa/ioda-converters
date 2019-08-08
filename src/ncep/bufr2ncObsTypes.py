@@ -719,7 +719,7 @@ class ObsType(object):
                         ActualValues[i]['time@MetaData']] = self.calc_obs_date_time(ActualValuesBufr[i])
 
                     _t1 = (ActualValues[i]['time@MetaData']).astype(np.float)
-                    _t2 = np.array(dt.datetime.strptime(str(nc.date_time), '%Y%m%d%H'))
+                    _t2 = np.array(dt.datetime.strptime(str(nc.date_time), '%Y%m%d%H').timestamp() )
                     ActualValues[i]['time@MetaData'] = (_t1 - _t2) / 3600
 
                     # Calculate the value of lat and lon and add to the dictionary.
