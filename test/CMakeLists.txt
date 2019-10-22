@@ -22,6 +22,7 @@ list( APPEND test_input
   testinput/odb_sonde_16019.odb
   testinput/gnssro_kompsat5_20180415_00Z.bufr
   testinput/argoclim_test.nc
+  testinput/goes16_chan10_mesoscale_sample.nc
 )
 
 list( APPEND test_output
@@ -39,6 +40,7 @@ list( APPEND test_output
   testoutput/odb_sonde_16019.nc4
   testoutput/gnssro_kompsat5_2018041500.nc4
   testoutput/argoclim.nc
+  testoutput/goes16_chan10_mesoscale_sample.nc4
 )
 
 # create test directories and make links to the input files
@@ -162,6 +164,15 @@ ecbuild_add_test( TARGET test_iodaconv_argoclim
                        -o testrun/argoclim.nc
                        -d 2019101600"
                       argoclim.nc)
+
+ecbuild_add_test( TARGET test_iodaconv_goes16
+                  TYPE SCRIPT
+                  COMMAND iodaconv_comp.sh
+                  ARGS "${CMAKE_BINARY_DIR}/bin/goes16_to_ioda.py
+                       testinput/goes16_chan10_mesoscale_sample.nc
+                       10
+                       testrun/goes16_chan10_mesoscale_sample.nc4"
+                      goes16_chan10_mesoscale_sample.nc4)
 
 #===============================================================================
 # GSI ncdiag converters
