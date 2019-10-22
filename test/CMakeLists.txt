@@ -169,6 +169,7 @@ ecbuild_add_test( TARGET test_iodaconv_goes16
                   TYPE SCRIPT
                   COMMAND iodaconv_comp.sh
                   ARGS "${CMAKE_BINARY_DIR}/bin/goes16_to_ioda.py
+                       -c
                        testinput/goes16_chan10_mesoscale_sample.nc
                        10
                        testrun/goes16_chan10_mesoscale_sample.nc4"
