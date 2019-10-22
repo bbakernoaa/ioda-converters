@@ -17,6 +17,7 @@ N_STRING = 20
 # SUBROUTINES
 ###################################################################################
 
+
 def CalcLatLon(Fid, ScanAngle, ElevAngle):
     #####################################################################
     # This routine will convert the GEOS-16 fixed grid coordinates
@@ -44,13 +45,13 @@ def CalcLatLon(Fid, ScanAngle, ElevAngle):
     # First step is to obtain parameters from the file
     IprojVar = Fid.variables['goes_imager_projection']
 
-    Req  = IprojVar.semi_major_axis
+    Req = IprojVar.semi_major_axis
     Rpol = IprojVar.semi_minor_axis
-    H    = IprojVar.perspective_point_height + IprojVar.semi_major_axis
+    H = IprojVar.perspective_point_height + IprojVar.semi_major_axis
     Lon0 = IprojVar.longitude_of_projection_origin * Deg2Rad
 
-    Hsqr    = H * H
-    ReqSqr  = Req * Req
+    Hsqr = H * H
+    ReqSqr = Req * Req
     RpolSqr = Rpol * Rpol
 
     # Sin and Cos factors
@@ -65,9 +66,9 @@ def CalcLatLon(Fid, ScanAngle, ElevAngle):
     CosYSqr = np.power(CosY, 2.0)
 
     # Terms for the quadratic root equation below
-    a  = SinXSqr + (CosXSqr * (CosYSqr + (ReqSqr * SinYSqr / RpolSqr)))
-    b  = -2.0 * H * CosX * CosY
-    c  = Hsqr - ReqSqr
+    a = SinXSqr + (CosXSqr * (CosYSqr + (ReqSqr * SinYSqr / RpolSqr)))
+    b = -2.0 * H * CosX * CosY
+    c = Hsqr - ReqSqr
 
     Arg = np.power(b, 2.0) - (4.0 * a * c)
     Rs = ((-1.0 * b) - np.sqrt(Arg)) / (2.0 * a)
@@ -81,8 +82,9 @@ def CalcLatLon(Fid, ScanAngle, ElevAngle):
     HminusSx = H - Sx
     Lon = (Lon0 - np.arctan2(Sy, HminusSx)) * Rad2Deg
     Lat = (np.arctan2((ReqSqr * Sz), (RpolSqr * np.sqrt(HminusSx*HminusSx + Sy*Sy)))) * Rad2Deg
-    
+
     return (Lat, Lon)
+
 
 def CalcSolarAngles(Lat, Lon, Tref, Toff):
     ############################################################
@@ -92,14 +94,14 @@ def CalcSolarAngles(Lat, Lon, Tref, Toff):
 
     Nlocs = len(Lat)
 
-    Tabs = np.array([Tref + dt.timedelta(hours=Toff[i]) for i in range(Nlocs)] )
+    Tabs = np.array([Tref + dt.timedelta(hours=Toff[i]) for i in range(Nlocs)])
     print("DEBUG: Tabs: ", Tabs)
 
-    SolZen  = np.zeros((Nlocs,))
+    SolZen = np.zeros((Nlocs,))
     SolAzim = np.zeros((Nlocs,))
 
     return (SolZen, SolAzim)
-        
+
 
 def WriteNcArray(NcGroup, Name, Dims, Values):
     ############################################################
@@ -114,9 +116,10 @@ def WriteNcArray(NcGroup, Name, Dims, Values):
         AllDims = Dims + ('nstring',)
     else:
         AllDims = Dims
-    
+
     NcGroup.createVariable(Name, Dtype, AllDims)
     NcGroup[Name][:] = Values
+
 
 def NumpyToNcDtype(NumpyDtype):
     ############################################################
@@ -139,6 +142,7 @@ def NumpyToNcDtype(NumpyDtype):
 
     return NcDtype
 
+
 ###################################################################################
 # CLASSES
 ###################################################################################
@@ -146,6 +150,8 @@ def NumpyToNcDtype(NumpyDtype):
 ###################################################################################
 # MAIN
 ###################################################################################
+
+
 ScriptName = os.path.basename(sys.argv[0])
 
 # Parse command line
@@ -217,8 +223,8 @@ EarthLocs = ~np.ma.getmaskarray(InFid.variables['DQF'][:])
 # convert the times to offsets from the year, month, day, hour values.
 Tepoch = dt.datetime(2000, 1, 1, 12, 0, 0, 0, pytz.UTC)
 Tstart = Tepoch + dt.timedelta(seconds=int(round(float(InFid.variables['time_bounds'][0]))))
-Tmid   = Tepoch + dt.timedelta(seconds=int(round(float(InFid.variables['t'][0]))))
-Tend   = Tepoch + dt.timedelta(seconds=int(round(float(InFid.variables['time_bounds'][1]))))
+Tmid = Tepoch + dt.timedelta(seconds=int(round(float(InFid.variables['t'][0]))))
+Tend = Tepoch + dt.timedelta(seconds=int(round(float(InFid.variables['time_bounds'][1]))))
 
 # round to the nearest hour
 Trefdate = Tmid.replace(minute=0, second=0, microsecond=0)
@@ -229,7 +235,7 @@ if (Tmid.minute >= 30):
 Ts = (Tstart - Trefdate).total_seconds()
 Te = (Tend - Trefdate).total_seconds()
 
-# Divide up the interval into even pieces while rounding to the nearest second. 
+# Divide up the interval into even pieces while rounding to the nearest second.
 # This is not exactly correct. The scans for mesoscale, CONUS, and full disk are
 # interleaved and don't occur in even deltas. But, there doesn't seem to be
 # enough information in the file to work out the exact pixel times.
@@ -257,7 +263,7 @@ SelectedY = GridY[EarthLocs]
 # Calculate the solar zenith and azimuth angles
 # WARNING: CalcSolarAngles is not ready since the calls to pysolar are
 # extremely slow.
-#(SolZen, SolAzim) = CalcSolarAngles(Lat, Lon, Trefdate, OffsetTime)
+# (SolZen, SolAzim) = CalcSolarAngles(Lat, Lon, Trefdate, OffsetTime)
 
 # Create dimensions
 Nlocs = len(SelectedX)
@@ -276,14 +282,14 @@ ElevAngle = SelectedY * 180.0 / np.pi
 
 WriteNcArray(OutFid, "Scan_Angle@MetaData", ('nlocs'), ScanAngle)
 WriteNcArray(OutFid, "Elevation_Angle@MetaData", ('nlocs'), ElevAngle)
-#WriteNcArray(OutFid, "Sol_Zenith_Angle@MetaData", ('nlocs'), SolZen)
-#WriteNcArray(OutFid, "Sol_Azimuth_Angle@MetaData", ('nlocs'), SolAzim)
+# WriteNcArray(OutFid, "Sol_Zenith_Angle@MetaData", ('nlocs'), SolZen)
+# WriteNcArray(OutFid, "Sol_Azimuth_Angle@MetaData", ('nlocs'), SolAzim)
 
 WriteNcArray(OutFid, "latitude@MetaData", ('nlocs'), Lat)
 WriteNcArray(OutFid, "longitude@MetaData", ('nlocs'), Lon)
 
-OutFid.setncattr("date_time", (Trefdate.year*1000000 + Trefdate.month*10000 + 
-                               Trefdate.day * 100 + Trefdate.hour))
+DateTime = (Trefdate.year*1000000 + Trefdate.month*10000 + Trefdate.day * 100 + Trefdate.hour)
+OutFid.setncattr("date_time", DateTime)
 WriteNcArray(OutFid, "time@MetaData", ('nlocs'), OffsetTime)
 
 # Copy the radiance and qc mark data to the output

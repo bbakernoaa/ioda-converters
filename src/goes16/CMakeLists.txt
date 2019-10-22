@@ -1,5 +1,5 @@
 list(APPEND programs
-  goes16_to_ioda.py.in
+  goes16_to_ioda.py
 )
 
 set( SCRIPT_LIB_PATH ${PYIODACONV_BUILD_LIBDIR} )
