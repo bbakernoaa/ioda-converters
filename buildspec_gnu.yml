@@ -25,7 +25,9 @@ phases:
 
       - echo "CODEBUILD_GIT_BRANCH=${CODEBUILD_GIT_BRANCH}"
       - echo "CODEBUILD_SOURCE_VERSION=${CODEBUILD_SOURCE_VERSION}"
-
+      - echo $PATH
+      - echo export PATH="/usr/local/lib":$PATH"
+      - echo $PATH
       - echo MPI setup for Docker
         #      - mkdir -p /var/run/sshd
         #      - ssh-keygen -A
