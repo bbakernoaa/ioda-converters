@@ -85,6 +85,7 @@ phases:
       - cd /build
       - ecbuild /jcsda/ioda-converters
       - make -j4
+      - ctest
 
       - export BUILD_STATUS="0"
       - echo $BUILD_STATUS
