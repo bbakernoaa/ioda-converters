@@ -54,7 +54,8 @@ phases:
         && cp /jcsda/.ssh/id_rsa.pub /jcsda/.ssh/authorized_keys
         && echo MPI setup for Docker done
         && echo $PATH
-        && echo $PYTHONPATH"
+        && echo $PYTHONPATH
+        && ls /usr/local/lib/"
 
       - git lfs install
       - git clone https://github.com/jcsda/ioda-converters
