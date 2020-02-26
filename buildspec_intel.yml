@@ -104,6 +104,7 @@ phases:
         && echo $LD_LIBRARY_PATH
         && cd /build_container
         && ls
+        && ls /usr/local/lib
         && export PYTHONPATH=/usr/local/lib
         && ctest"
 
