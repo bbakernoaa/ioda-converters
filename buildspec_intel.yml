@@ -82,8 +82,8 @@ phases:
         #        && ecbuild /jcsda/ioda-converters
         #        && make -j4"
 
-      - ecbuild /jcsda/ioda-converters
       - cd /build
+      - ecbuild /jcsda/ioda-converters
       - make -j4
 
       - export BUILD_STATUS="0"
