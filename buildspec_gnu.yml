@@ -66,16 +66,15 @@ phases:
       - git lfs install # creates .gitconfig
       - cp ~/.gitconfig /home/jcsdauser/
       - mv ioda-converters /jcsda/
-
   build:
     commands:
-     - su - jcsdauser -c "cd /build_container 
+      - su - jcsdauser -c "cd /build_container 
         && echo $CC
         && echo $CXX
         && echo $FC
         && CC=mpicc CXX=mpicxx FC=mpifort ecbuild /jcsda/ioda-converters
         && make -j4"
-         
+
       - export BUILD_STATUS="0"
       - echo $BUILD_STATUS
       - echo $CODEBUILD_BUILD_SUCCEEDING
@@ -85,11 +84,12 @@ phases:
         echo "Build passed";
         fi
       - echo $BUILD_STATUS
-      - su - jcsdauser -c "cd /build_container
-        && ctest"
 
-      - cd /build_container
-      - ctest
+      - su - jcsdauser -c "cd /build_container
+        && echo $PYTHONPATH
+        && export PYTHONPATH=/usr/local/lib
+        && echo $PYTHONPATH
+        && ctest"
 
   post_build:
     commands:
@@ -98,8 +98,7 @@ phases:
       - if [ "$BUILD_STATUS" = "1" ] && [ "$CODEBUILD_BUILD_SUCCEEDING" = "0" ];
         then echo "Build passed, rerun failed tests";
         su - jcsdauser -c "cd /build_container
+        && export PYTHONPATH=/usr/local/lib
         && ctest -VV --rerun-failed";
         else echo "Build failed";
         fi
-
-
