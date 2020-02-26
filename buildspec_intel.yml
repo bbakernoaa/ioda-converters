@@ -64,6 +64,7 @@ phases:
       - cp ~/.gitconfig /home/jcsdauser/
 
       - mv ioda-converters /jcsda/
+      - mkdir /build
   build:
     commands:
       - su - jcsdauser -c "export COMPILERVARS_ARCHITECTURE=intel64
@@ -77,9 +78,13 @@ phases:
         && export LIBRARY_PATH=/usr/local/lib
         && . /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh
         && cd /build_container
-        && echo $LD_LIBRARY_PATH
-        && ecbuild /jcsda/ioda-converters
-        && make -j4"
+        && echo $LD_LIBRARY_PATH"
+        #        && ecbuild /jcsda/ioda-converters
+        #        && make -j4"
+
+      - ecbuild /jcsda/ioda-converters
+      - cd /build
+      - make -j4
 
       - export BUILD_STATUS="0"
       - echo $BUILD_STATUS
