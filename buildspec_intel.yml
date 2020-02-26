@@ -42,7 +42,7 @@ phases:
       - ecbuild /jcsda/ioda-converters
       - make -j4
       - export PYTHONPATH=/usr/local/lib
-      - ctest -VV
+      - ctest
 
       - export BUILD_STATUS="0"
       - echo $BUILD_STATUS
