@@ -85,7 +85,8 @@ phases:
       - cd /build
       - ecbuild /jcsda/ioda-converters
       - make -j4
-      - ctest
+      - export PYTHONPATH=/usr/local/lib
+      - ctest -VV
 
       - export BUILD_STATUS="0"
       - echo $BUILD_STATUS
@@ -96,23 +97,6 @@ phases:
         echo "Build passed";
         fi
       - echo $BUILD_STATUS
-
-      - su - jcsdauser -c "export COMPILERVARS_ARCHITECTURE=intel64
-        && export COMPILERVARS_PLATFORM=linux
-        && . /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh
-        && export FC=mpiifort
-        && export CC=mpiicc
-        && export CXX=mpiicpc
-        && export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        && export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib/python3/dist-packages
-        && export LIBRARY_PATH=/usr/local/lib
-        && . /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh
-        && echo $LD_LIBRARY_PATH
-        && cd /build_container
-        && ls
-        && ls /usr/local/lib
-        && export PYTHONPATH=/usr/local/lib
-        && ctest"
 
   post_build:
     commands:
