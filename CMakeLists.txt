@@ -3,7 +3,7 @@
 # Copyright and License: see LICENSE
 
 cmake_minimum_required( VERSION 3.12 )
-project( iodacov LANGUAGES CXX Fortran )
+project( iodaconv LANGUAGES CXX Fortran )
 
 ## Ecbuild integration
 include( ecbuild_system NO_POLICY_SCOPE )
