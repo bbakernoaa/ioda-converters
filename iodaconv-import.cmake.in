@@ -1,0 +1,19 @@
+# iodaconv-import.cmake
+# find_dependency calls for ioda-converters target dependencies
+
+include(CMakeFindDependencyMacro)
+
+find_package(NetCDF REQUIRED COMPONENTS Fortran)
+if( @odb_api_FOUND @)
+    find_dependency(odb_api REQUIRED)
+endif()
+
+if( @bufrlib_FOUND @)
+    find_dependency(bufrlib REQUIRED)
+endif()
+if( @odc_FOUND @)
+    find_dependency(odc REQUIRED)
+endif()
+if( @odyssey_FOUND @)
+    find_dependency(odyssey REQUIRED)
+endif()

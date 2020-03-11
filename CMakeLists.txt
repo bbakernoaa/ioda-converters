@@ -12,10 +12,13 @@ list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
 ## Configuration options
 include( ${PROJECT_NAME}_compiler_flags )
+include( ${PROJECT_NAME}_extra_macros )
 include( GNUInstallDirs )
-
+set( PYIODACONV_BUILD_LIBDIR   ${CMAKE_BINARY_DIR}/lib/pyiodaconv )
+set( PYIODACONV_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib/pyiodaconv )
+set( IODACONV_PYLINT_CFG_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 ## Dependencies
-find_package(Python REQUIRED)
+ecbuild_find_python( REQUIRED )
 find_package(NetCDF REQUIRED COMPONENTS Fortran)
 
 #Optional dependencies
@@ -34,8 +37,6 @@ add_subdirectory( tools )
 add_subdirectory( test )
 
 ## Package Config
-set( PYIODACONV_BUILD_LIBDIR   ${CMAKE_BINARY_DIR}/lib/pyiodaconv )
-set( PYIODACONV_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib/pyiodaconv )
 ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 ecbuild_print_summary()

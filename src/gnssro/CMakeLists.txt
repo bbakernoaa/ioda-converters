@@ -1,6 +1,6 @@
 # ioda-converters/src/gnssro
 
-if( bufrlib_FOUND and NetCDF_FOUND )
+if( bufrlib_FOUND AND NetCDF_FOUND )
     add_executable(gnssro_bufr2ioda gnssro_bufr2ioda.f90)
     target_link_libraries(gnssro_bufr2ioda PUBLIC ${bufrlib_LIBRARIES})
     target_link_libraries(gnssro_bufr2ioda PUBLIC NetCDF::NetCDF_Fortran)
