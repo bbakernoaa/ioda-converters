@@ -9,6 +9,7 @@ project( iodaconv LANGUAGES CXX Fortran )
 include( ecbuild_system NO_POLICY_SCOPE )
 ecbuild_declare_project()
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+set( CMAKE_DIRECTORY_LABELS ${PROJECT_NAME} )
 
 ## Configuration options
 include( ${PROJECT_NAME}_compiler_flags )
